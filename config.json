@@ -1,0 +1,266 @@
+{
+  "max_alerts_per_run": 10,
+  "target_graduation_years": [
+    2026,
+    2027
+  ],
+  "preferred_locations": [
+    "india",
+    "bengaluru",
+    "bangalore",
+    "hyderabad",
+    "pune",
+    "chennai",
+    "gurgaon",
+    "gurugram",
+    "noida",
+    "mumbai",
+    "remote"
+  ],
+  "software_keywords": [
+    "software engineer",
+    "software developer",
+    "application developer",
+    "backend engineer",
+    "frontend engineer",
+    "full stack",
+    "java developer",
+    "python developer",
+    "cloud engineer",
+    "devops engineer",
+    "qa engineer",
+    "test engineer",
+    "sdet",
+    "associate engineer",
+    "associate software engineer",
+    "programmer analyst trainee",
+    "project engineer",
+    "system engineer",
+    "digital cadre",
+    "prime cadre",
+    "technical graduate",
+    "graduate engineer trainee",
+    "technology graduate",
+    "software trainee"
+  ],
+  "freshers_keywords": [
+    "fresher",
+    "freshers",
+    "graduate",
+    "new grad",
+    "new graduate",
+    "university graduate",
+    "campus",
+    "entry level",
+    "entry-level",
+    "associate software engineer",
+    "junior software engineer",
+    "0-1 years",
+    "0-2 years",
+    "0 to 1 years",
+    "0 to 2 years",
+    "batch",
+    "year of passing",
+    "yop",
+    "2026",
+    "2027"
+  ],
+  "reject_keywords": [
+    "senior",
+    "staff",
+    "principal",
+    "lead",
+    "manager",
+    "architect",
+    "director",
+    "10+ years",
+    "8+ years",
+    "7+ years",
+    "6+ years",
+    "5+ years",
+    "4+ years",
+    "3+ years",
+    "2+ years",
+    "intern",
+    "internship",
+    "contract",
+    "temporary",
+    "consultant"
+  ],
+  "sources": [
+    {
+      "company": "Stripe",
+      "type": "greenhouse",
+      "board": "stripe"
+    },
+    {
+      "company": "MongoDB",
+      "type": "greenhouse",
+      "board": "mongodb"
+    },
+    {
+      "company": "Okta",
+      "type": "greenhouse",
+      "board": "okta"
+    },
+    {
+      "company": "Datadog",
+      "type": "greenhouse",
+      "board": "datadog"
+    },
+    {
+      "company": "Twilio",
+      "type": "greenhouse",
+      "board": "twilio"
+    },
+    {
+      "company": "Atlassian",
+      "type": "lever",
+      "site": "atlassian"
+    },
+    {
+      "company": "TCS",
+      "type": "career_page",
+      "title": "TCS All India NQT Hiring - Prime and Digital",
+      "location": "India",
+      "url": "https://www.tcs.com/careers/india/tcs-all-india-nqt-hiring"
+    },
+    {
+      "company": "TCS",
+      "type": "career_page",
+      "title": "TCS Entry Level Hiring",
+      "location": "India",
+      "url": "https://www.tcs.com/careers/india/entry-level"
+    },
+    {
+      "company": "Infosys",
+      "type": "career_page",
+      "title": "Infosys Graduates Hiring",
+      "location": "India",
+      "url": "https://www.infosys.com/careers/graduates.html"
+    },
+    {
+      "company": "Wipro",
+      "type": "career_page",
+      "title": "Wipro Technical Graduate Hiring Program",
+      "location": "India",
+      "url": "https://careers.wipro.com/content/Early-Careers/"
+    },
+    {
+      "company": "Cognizant",
+      "type": "career_page",
+      "title": "Cognizant GenC Entry-Level Program",
+      "location": "India",
+      "url": "https://careers.cognizant.com/india-en/pathways-to-cognizant/genc-program/"
+    },
+    {
+      "company": "Cognizant",
+      "type": "career_page",
+      "title": "Cognizant Students and New Grads",
+      "location": "India",
+      "url": "https://careers.cognizant.com/global-en/pathways-to-cognizant/students-and-new-grads/"
+    },
+    {
+      "company": "Capgemini",
+      "type": "career_page",
+      "title": "Capgemini Students and Graduates",
+      "location": "India",
+      "url": "https://www.capgemini.com/in-en/careers/career-paths/students-and-graduates/"
+    },
+    {
+      "company": "HCLTech",
+      "type": "career_page",
+      "title": "HCLTech Careers for Freshers",
+      "location": "India",
+      "url": "https://www.hcltech.com/jobs"
+    },
+    {
+      "company": "Accenture",
+      "type": "career_page",
+      "title": "Accenture India Entry Level Careers",
+      "location": "India",
+      "url": "https://www.accenture.com/in-en/careers"
+    },
+    {
+      "company": "TCS",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:tcs.com/careers/india TCS 2026 2027 batch fresher software engineer M.Tech B.Tech",
+      "allowed_domains": [
+        "tcs.com"
+      ]
+    },
+    {
+      "company": "TCS",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:tata.com/careers/jobs TCS 2026 2027 batch fresher software engineer M.Tech B.Tech",
+      "allowed_domains": [
+        "tata.com"
+      ]
+    },
+    {
+      "company": "Infosys",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:infosys.com/careers Infosys 2026 2027 batch fresher software engineer graduates",
+      "allowed_domains": [
+        "infosys.com"
+      ]
+    },
+    {
+      "company": "Wipro",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:careers.wipro.com Wipro 2026 2027 batch fresher software engineer technical graduate hiring",
+      "allowed_domains": [
+        "careers.wipro.com"
+      ]
+    },
+    {
+      "company": "Cognizant",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:careers.cognizant.com Cognizant 2026 2027 batch fresher software engineer GenC India",
+      "allowed_domains": [
+        "careers.cognizant.com"
+      ]
+    },
+    {
+      "company": "Capgemini",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:capgemini.com/in-en/careers Capgemini 2026 2027 batch fresher associate software engineer graduates",
+      "allowed_domains": [
+        "capgemini.com"
+      ]
+    },
+    {
+      "company": "HCLTech",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:hcltech.com HCLTech 2026 2027 batch fresher software engineer graduate engineer trainee",
+      "allowed_domains": [
+        "hcltech.com"
+      ]
+    },
+    {
+      "company": "Accenture",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:accenture.com/in-en/careers Accenture 2026 2027 batch fresher software engineer graduates India",
+      "allowed_domains": [
+        "accenture.com"
+      ]
+    },
+    {
+      "company": "Tech Mahindra",
+      "type": "bing_search",
+      "location": "India",
+      "query": "site:techmahindra.com/careers Tech Mahindra 2026 2027 batch fresher software engineer graduates",
+      "allowed_domains": [
+        "techmahindra.com"
+      ]
+    }
+  ]
+}
