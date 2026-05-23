@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.env
+seen_jobs.sqlite3
+devserver.log
