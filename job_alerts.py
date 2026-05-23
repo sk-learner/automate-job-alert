@@ -182,6 +182,38 @@ def bing_search_jobs(source: dict) -> Iterable[Job]:
             break
 
 
+def google_cse_jobs(source: dict) -> Iterable[Job]:
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    cse_id = os.environ.get("GOOGLE_CSE_ID")
+    if not api_key or not cse_id:
+        return
+    company = source["company"]
+    allowed_domains = source.get("allowed_domains", [])
+    max_results = min(int(source.get("max_results", 5)), 10)
+    params = {
+        "key": api_key,
+        "cx": cse_id,
+        "q": source["query"],
+        "num": max_results,
+        "sort": source.get("sort", "date"),
+    }
+    api_url = "https://www.googleapis.com/customsearch/v1?" + parse.urlencode(params)
+    payload = fetch_json(api_url)
+    for item in payload.get("items", []):
+        link = normalize(item.get("link", ""))
+        if allowed_domains and not domain_allowed(link, allowed_domains):
+            continue
+        digest = hashlib.sha256(link.encode("utf-8")).hexdigest()[:16]
+        yield Job(
+            source_id=f"google_cse:{company}:{digest}",
+            company=company,
+            title=normalize(item.get("title", "")),
+            location=normalize(source.get("location", "India")),
+            url=link,
+            description=normalize(item.get("snippet", "")),
+        )
+
+
 def fetch_jobs(config: dict) -> list[Job]:
     jobs: list[Job] = []
     for source in config["sources"]:
@@ -194,6 +226,8 @@ def fetch_jobs(config: dict) -> list[Job]:
                 jobs.extend(career_page_jobs(source))
             elif source["type"] == "bing_search":
                 jobs.extend(bing_search_jobs(source))
+            elif source["type"] == "google_cse":
+                jobs.extend(google_cse_jobs(source))
             else:
                 print(f"Skipping unknown source type: {source}", file=sys.stderr)
         except (error.URLError, TimeoutError, json.JSONDecodeError, KeyError) as exc:
