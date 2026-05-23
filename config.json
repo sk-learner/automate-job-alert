@@ -89,6 +89,104 @@
   ],
   "sources": [
     {
+      "company": "TCS",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "TCS fresher hiring 2026 2027 batch software engineer NQT Prime Digital apply"
+    },
+    {
+      "company": "Infosys",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Infosys fresher hiring 2026 2027 batch software engineer systems engineer apply"
+    },
+    {
+      "company": "Wipro",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Wipro fresher hiring 2026 2027 batch project engineer software apply"
+    },
+    {
+      "company": "Cognizant",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Cognizant GenC fresher hiring 2026 2027 batch software engineer apply"
+    },
+    {
+      "company": "Accenture",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Accenture fresher hiring 2026 2027 batch associate software engineer India apply"
+    },
+    {
+      "company": "Capgemini",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Capgemini fresher hiring 2026 2027 batch analyst software engineer India apply"
+    },
+    {
+      "company": "HCLTech",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "HCLTech fresher hiring 2026 2027 batch graduate engineer trainee software apply"
+    },
+    {
+      "company": "Tech Mahindra",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 8,
+      "query": "Tech Mahindra fresher hiring 2026 2027 batch software engineer apply"
+    },
+    {
+      "company": "Deloitte",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 6,
+      "query": "Deloitte fresher hiring 2026 2027 batch analyst software engineer India apply"
+    },
+    {
+      "company": "IBM",
+      "type": "bing_search",
+      "location": "India",
+      "max_results": 6,
+      "query": "IBM fresher hiring 2026 2027 batch associate system engineer software India apply"
+    },
+    {
+      "company": "TCS",
+      "type": "google_cse",
+      "location": "India",
+      "max_results": 8,
+      "query": "TCS fresher hiring 2026 2027 batch software engineer NQT Prime Digital apply"
+    },
+    {
+      "company": "Infosys",
+      "type": "google_cse",
+      "location": "India",
+      "max_results": 8,
+      "query": "Infosys fresher hiring 2026 2027 batch software engineer systems engineer apply"
+    },
+    {
+      "company": "Wipro",
+      "type": "google_cse",
+      "location": "India",
+      "max_results": 8,
+      "query": "Wipro fresher hiring 2026 2027 batch project engineer software apply"
+    },
+    {
+      "company": "Cognizant",
+      "type": "google_cse",
+      "location": "India",
+      "max_results": 8,
+      "query": "Cognizant GenC fresher hiring 2026 2027 batch software engineer apply"
+    },
+    {
       "company": "Stripe",
       "type": "greenhouse",
       "board": "stripe"
