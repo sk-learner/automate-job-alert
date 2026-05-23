@@ -3,7 +3,7 @@ name: MNC Fresher Job Alerts
 on:
   schedule:
     # Runs every day at 9:00 AM India time.
-    - cron: "30 3 * * *"
+    - cron: "30 */2 * * *"
   workflow_dispatch:
 
 jobs:
