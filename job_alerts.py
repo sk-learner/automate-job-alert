@@ -39,6 +39,14 @@ class Job:
     description: str
 
 
+@dataclass(frozen=True)
+class Match:
+    job: Job
+    confidence: str
+    score: int
+    reasons: tuple[str, ...]
+
+
 class TextExtractor(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
@@ -240,6 +248,11 @@ def contains_any(text: str, keywords: list[str]) -> bool:
     return any(keyword.lower() in text_l for keyword in keywords)
 
 
+def matching_keywords(text: str, keywords: list[str]) -> list[str]:
+    text_l = text.lower()
+    return [keyword for keyword in keywords if keyword.lower() in text_l]
+
+
 def is_preferred_location(job: Job, config: dict) -> bool:
     combined = f"{job.location} {job.description}".lower()
     return contains_any(combined, config["preferred_locations"])
@@ -279,6 +292,110 @@ def is_fresher_software_role(job: Job, config: dict) -> bool:
     if not is_preferred_location(job, config):
         return False
     return True
+
+
+def is_trusted_source(job: Job, config: dict) -> bool:
+    trusted_domains = config.get("trusted_domains", [])
+    return bool(trusted_domains and domain_allowed(job.url, trusted_domains))
+
+
+def is_priority_company(job: Job, config: dict) -> bool:
+    priority_companies = [company.lower() for company in config.get("priority_companies", [])]
+    return job.company.lower() in priority_companies
+
+
+def looks_like_hiring_page(job: Job) -> bool:
+    haystack = f"{job.title} {job.url} {job.description[:500]}".lower()
+    hiring_terms = [
+        "career",
+        "careers",
+        "job",
+        "jobs",
+        "hiring",
+        "apply",
+        "campus",
+        "off-campus",
+        "freshers",
+        "fresher",
+        "graduate",
+        "entry-level",
+        "entry level",
+        "nqt",
+        "genc",
+        "students-and-new-grads",
+        "students and graduates",
+    ]
+    return any(term in haystack for term in hiring_terms)
+
+
+def score_personalized_match(job: Job, config: dict) -> Match | None:
+    searchable = f"{job.title} {job.location} {job.description}".lower()
+    title_l = job.title.lower()
+    reject_hits = matching_keywords(title_l, config.get("reject_keywords", []))
+    if reject_hits:
+        return None
+
+    priority_company = is_priority_company(job, config)
+    trusted_source = is_trusted_source(job, config)
+    software_hits = matching_keywords(searchable, config.get("software_keywords", []))
+    fresher_hits = matching_keywords(searchable, config.get("freshers_keywords", []))
+    program_hits = matching_keywords(searchable, config.get("role_program_keywords", []))
+    degree_hits = matching_keywords(searchable, config.get("profile", {}).get("degrees", []))
+    skill_hits = matching_keywords(searchable, config.get("profile", {}).get("skills", []))
+    has_year = has_target_graduation_year(job, config)
+    has_location = is_preferred_location(job, config)
+
+    if not priority_company and not trusted_source:
+        return None
+    if not (fresher_hits or has_year or program_hits):
+        return None
+    if not (software_hits or program_hits or skill_hits):
+        return None
+    if not looks_like_hiring_page(job):
+        return None
+    if not trusted_source and not (fresher_hits or has_year):
+        return None
+    if not (fresher_hits or has_year) and not (program_hits and looks_like_hiring_page(job)):
+        return None
+
+    score = 0
+    reasons: list[str] = []
+    if priority_company:
+        score += 20
+        reasons.append("priority MNC/top IT company")
+    if trusted_source:
+        score += 15
+        reasons.append("official or trusted source")
+    if has_year:
+        score += 25
+        years = "/".join(str(year) for year in config.get("target_graduation_years", []))
+        reasons.append(f"matches target batch {years}")
+    if fresher_hits:
+        score += 20
+        reasons.append(f"fresher signal: {', '.join(fresher_hits[:3])}")
+    if software_hits:
+        score += 20
+        reasons.append(f"software role signal: {', '.join(software_hits[:3])}")
+    if program_hits:
+        score += 15
+        reasons.append(f"campus program signal: {', '.join(program_hits[:3])}")
+    if degree_hits:
+        score += 10
+        reasons.append(f"degree fit: {', '.join(degree_hits[:3])}")
+    if skill_hits:
+        score += min(10, len(skill_hits) * 2)
+        reasons.append(f"skill fit: {', '.join(skill_hits[:4])}")
+    if has_location:
+        score += 10
+        reasons.append("preferred India/remote location")
+
+    minimum_score = int(config.get("minimum_match_score", 45))
+    if score < minimum_score:
+        return None
+
+    score = min(score, 100)
+    confidence = "High match" if score >= int(config.get("high_match_score", 75)) else "Medium match"
+    return Match(job=job, confidence=confidence, score=score, reasons=tuple(reasons[:5]))
 
 
 def connect_db() -> sqlite3.Connection:
@@ -321,14 +438,17 @@ def mark_seen(conn: sqlite3.Connection, jobs: Iterable[Job]) -> None:
     conn.commit()
 
 
-def format_message(jobs: list[Job]) -> str:
-    lines = ["Fresh MNC software job openings:"]
-    for idx, job in enumerate(jobs, start=1):
+def format_message(matches: list[Match]) -> str:
+    lines = ["Personalized MNC fresher job alerts:"]
+    for idx, match in enumerate(matches, start=1):
+        job = match.job
         lines.extend(
             [
                 "",
-                f"{idx}. {job.company} - {job.title}",
+                f"{idx}. {match.confidence} ({match.score}/100)",
+                f"{job.company} - {job.title}",
                 f"Location: {job.location or 'Not listed'}",
+                f"Why: {'; '.join(match.reasons)}",
                 job.url,
             ]
         )
@@ -383,12 +503,15 @@ def main() -> int:
     conn = connect_db()
 
     jobs = fetch_jobs(config)
-    strict_matches = [job for job in jobs if is_fresher_software_role(job, config)]
-    new_matches = unseen_jobs(conn, strict_matches)
+    scored = [match for job in jobs if (match := score_personalized_match(job, config))]
+    scored.sort(key=lambda match: match.score, reverse=True)
+    new_jobs = unseen_jobs(conn, [match.job for match in scored])
+    new_ids = {job.source_id for job in new_jobs}
+    new_matches = [match for match in scored if match.job.source_id in new_ids]
     limited = new_matches[: int(config.get("max_alerts_per_run", 10))]
 
     if not limited:
-        print("No new strict fresher MNC software openings found.")
+        print("No new personalized MNC fresher software matches found.")
         return 0
 
     message = format_message(limited)
@@ -396,11 +519,11 @@ def main() -> int:
 
     if args.dry_run:
         if args.mark_seen:
-            mark_seen(conn, limited)
+            mark_seen(conn, [match.job for match in limited])
         return 0
 
     send_whatsapp(message)
-    mark_seen(conn, limited)
+    mark_seen(conn, [match.job for match in limited])
     print(f"Sent {len(limited)} WhatsApp alert(s).")
     return 0
 
