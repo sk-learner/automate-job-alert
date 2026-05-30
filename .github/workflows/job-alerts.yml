@@ -30,8 +30,9 @@ jobs:
 
       - name: Run job alert automation
         env:
-          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
-          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
-          WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+           GOOGLE_CSE_ID: ${{ secrets.GOOGLE_CSE_ID }}
         run: python job_alerts.py
 
