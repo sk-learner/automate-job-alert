@@ -455,46 +455,42 @@ def format_message(matches: list[Match]) -> str:
     return "\n".join(lines)
 
 
-def send_whatsapp(message: str) -> None:
-    token = os.environ.get("WHATSAPP_TOKEN")
-    phone_number_id = os.environ.get("WHATSAPP_PHONE_NUMBER_ID")
-    recipient = os.environ.get("WHATSAPP_TO")
+def send_telegram(message: str) -> None:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     missing = [
         name
         for name, value in {
-            "WHATSAPP_TOKEN": token,
-            "WHATSAPP_PHONE_NUMBER_ID": phone_number_id,
-            "WHATSAPP_TO": recipient,
+            "TELEGRAM_BOT_TOKEN": token,
+            "TELEGRAM_CHAT_ID": chat_id,
         }.items()
         if not value
     ]
     if missing:
-        raise RuntimeError(f"Missing WhatsApp environment values: {', '.join(missing)}")
+        raise RuntimeError(f"Missing Telegram environment values: {', '.join(missing)}")
 
-    url = f"https://graph.facebook.com/v20.0/{phone_number_id}/messages"
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": recipient,
-        "type": "text",
-        "text": {"preview_url": True, "body": message},
-    }
-    data = json.dumps(payload).encode("utf-8")
-    req = request.Request(
-        url,
-        data=data,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-        },
-    )
-    with request.urlopen(req, timeout=30) as response:
-        response.read()
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    chunks = [message[idx : idx + 3900] for idx in range(0, len(message), 3900)]
+    for chunk in chunks:
+        payload = {
+            "chat_id": chat_id,
+            "text": chunk,
+            "disable_web_page_preview": False,
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = request.Request(
+            url,
+            data=data,
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+        with request.urlopen(req, timeout=30) as response:
+            response.read()
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Send WhatsApp alerts for fresher MNC software roles.")
-    parser.add_argument("--dry-run", action="store_true", help="Print matches without sending WhatsApp.")
+    parser = argparse.ArgumentParser(description="Send Telegram alerts for fresher MNC software roles.")
+    parser.add_argument("--dry-run", action="store_true", help="Print matches without sending Telegram.")
     parser.add_argument("--mark-seen", action="store_true", help="Mark dry-run matches as seen.")
     args = parser.parse_args()
 
@@ -522,9 +518,9 @@ def main() -> int:
             mark_seen(conn, [match.job for match in limited])
         return 0
 
-    send_whatsapp(message)
+    send_telegram(message)
     mark_seen(conn, [match.job for match in limited])
-    print(f"Sent {len(limited)} WhatsApp alert(s).")
+    print(f"Sent {len(limited)} Telegram alert(s).")
     return 0
 
 
